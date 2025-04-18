@@ -1,6 +1,7 @@
 from repo import user_repo
 from util.database import get_conn
 from util.hasher import hash_password
+from datetime import datetime
 
 def create_user(username: str, password: str):
     conn = get_conn()
@@ -9,7 +10,8 @@ def create_user(username: str, password: str):
         raise ValueError("Username already registered.")
     
     hashed = hash_password(password)
-    user_repo.save_user(conn, username, hashed)
+    date_created = datetime.now()
+    user_repo.save_user(conn, username, hashed, date_created)
 
 
 def get_all_users() -> dict:
@@ -26,5 +28,5 @@ def get_user_by_id(user_id: int) -> dict:
     return {
         "id": user["id"],
         "username": user["username"],
-        # "hashed_password": user["hashed_password"]
+        "date_created": user["date_created"],
     }
