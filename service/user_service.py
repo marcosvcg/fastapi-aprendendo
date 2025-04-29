@@ -1,32 +1,42 @@
 from repo import user_repo
-from util.database import get_conn
+from util.database import get_connection
 from util.hasher import hash_password
 from datetime import datetime
 
-def create_user(username: str, password: str):
-    conn = get_conn()
+class UserService:
+    def __init__(self):
+        self.user_repo = user_repo
 
-    if user_repo.search_by_username(conn, username):
-        raise ValueError("Username already registered.")
-    
-    hashed = hash_password(password)
-    date_created = datetime.now()
-    user_repo.save_user(conn, username, hashed, date_created)
+    def create_user(self, username: str, password: str):
+        with get_connection() as conn:
+            if self.user_repo.search_by_username(conn, username):
+                raise ValueError("Username already registered.")
 
+            hashed = hash_password(password)
+            date_created = datetime.now()
+            self.user_repo.save_user(conn, username, hashed, date_created)
 
-def get_all_users() -> dict:
-    conn = get_conn()
-    return user_repo.search_all_users(conn)
+    def get_all_users(self) -> dict:
+        with get_connection() as conn:
+            return self.user_repo.search_all_users(conn)
 
-def get_user_by_id(user_id: int) -> dict:
-    conn = get_conn()
-    user = user_repo.search_by_id(conn, user_id)
+    def get_user_by_id(self, user_id: int) -> dict:
+        with get_connection() as conn:
+            user = self.user_repo.search_by_id(conn, user_id)
+            if not user:
+                raise ValueError("User not found")
+            return self.serialize_user_dict(user)
 
-    if not user:
-        raise ValueError("User not found")
+    def get_user_by_username(self, username: str) -> dict:
+        with get_connection() as conn:
+            user = self.user_repo.search_by_username(conn, username)
+            if not user:
+                raise ValueError("User not found")
+            return self.serialize_user_dict(user)
 
-    return {
-        "id": user["id"],
-        "username": user["username"],
-        "date_created": user["date_created"],
-    }
+    def serialize_user_dict(self, user: dict) -> dict:
+        return {
+            "id": user["id"],
+            "username": user["username"],
+            "date_created": user["date_created"],
+        }

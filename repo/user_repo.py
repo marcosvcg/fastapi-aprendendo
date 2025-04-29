@@ -14,8 +14,15 @@ def search_all_users(conn) -> dict:
 
 def search_by_username(conn, username: str) -> bool:
     cursor = conn.cursor()
-    cursor.execute("SELECT 1 FROM users WHERE username = ? LIMIT 1", (username,))
-    return cursor.fetchone() is not None
+    cursor.execute("SELECT id, username, date_created FROM users WHERE username = ? LIMIT 1", (username,))
+    row = cursor.fetchone()
+    if row:
+        return {
+            "id": row[0],
+            "username": row[1],
+            "date_created": row[2]
+        }
+    return None
 
 def search_by_id(conn, user_id: int) -> dict | None:
     cursor = conn.cursor()
@@ -28,4 +35,3 @@ def search_by_id(conn, user_id: int) -> dict | None:
             "date_created": row[2]
         }
     return None
-

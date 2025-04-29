@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from controller import user_controller
-from service import user_service
 
 app = FastAPI()
 app.include_router(user_controller.router)
@@ -20,9 +19,6 @@ dummy_data = [
     ("slipknot", "abc"),
     ("s0ad_", "safepassword")
 ]
-
-for username, password in dummy_data:
-    user_service.create_user(username, password)
 
 @app.get("/")
 def root():
