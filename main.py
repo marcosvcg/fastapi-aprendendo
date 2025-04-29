@@ -13,13 +13,6 @@ app.add_middleware(
     allow_headers= ["*"],
 )
 
-dummy_data = [
-    ("red8732", "senha123"),
-    ("a7x", "123456789"),
-    ("slipknot", "abc"),
-    ("s0ad_", "safepassword")
-]
-
 @app.get("/")
 def root():
     return {"message": "API rodando com sucesso! 🚀"}
