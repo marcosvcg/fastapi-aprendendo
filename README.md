@@ -78,3 +78,4 @@ http://localhost:8000/docs
 - `GET /users` — Lista todos os usuários cadastrados
 - `POST /user` — Cadastra um novo usuário (passando `username` e `password`)
 - `GET /user/{id}` — Retorna os dados de um usuário específico
+- `DELETE /user/{id}` — Deleta um usuário pela sua id
