@@ -16,6 +16,14 @@ class UserService:
             date_created = datetime.now()
             self.user_repo.save_user(conn, username, hashed, date_created)
 
+    def delete_user(self, user_id: int):
+        with get_connection() as conn:
+            user = self.user_repo.search_by_id(conn, user_id)
+            if not user:
+                raise ValueError(f"User with id {user_id} not found")
+            self.user_repo.delete_user(conn, user_id)
+            return self.serialize_user_dict(user)
+
     def get_all_users(self) -> dict:
         with get_connection() as conn:
             return self.user_repo.search_all_users(conn)
@@ -24,7 +32,7 @@ class UserService:
         with get_connection() as conn:
             user = self.user_repo.search_by_id(conn, user_id)
             if not user:
-                raise ValueError("User not found")
+                raise ValueError(f"User with id {user_id} not found")
             return self.serialize_user_dict(user)
 
     def get_user_by_username(self, username: str) -> dict:

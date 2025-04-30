@@ -6,6 +6,12 @@ def save_user(conn, username: str, hashed_password: str, date_created: str):
     )
     conn.commit()
 
+def delete_user(conn, user_id: int) -> bool:
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    return cursor.rowcount > 0
+
 def search_all_users(conn) -> dict:
     cursor = conn.cursor()
     cursor.execute("SELECT id, username, date_created FROM users ORDER BY id")
